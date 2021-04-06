@@ -19,6 +19,25 @@ components:
         name: fake name
         role: user
 
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        categoryName:
+          type: string
+        hitCount:
+          type: number
+        isIncome:
+          type: boolean
+        parentId:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+        categoryName: حقوق
+        hitCount: 0
+        isIncome: true
+
     Token:
       type: object
       properties:
