@@ -5,7 +5,7 @@ const createCategory = {
   body: Joi.object().keys({
     categoryName: Joi.string().required().min(3).max(255),
     parentId: Joi.string().custom(objectId),
-    hitCount: Joi.number(),
+    hitCount: Joi.number().integer(),
     isIncome: Joi.boolean().required(),
   }),
 };
@@ -14,7 +14,7 @@ const getCategories = {
   query: Joi.object().keys({
     categoryName: Joi.string(),
     isIncome: Joi.boolean(),
-    hitCount: Joi.number(),
+    hitCount: Joi.number().integer(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -34,7 +34,7 @@ const updateCategory = {
   body: Joi.object()
     .keys({
       categoryName: Joi.string(),
-      hitCount: Joi.number(),
+      hitCount: Joi.number().integer(),
       isIncome: Joi.boolean(),
       parentId: Joi.string().custom(objectId),
     })

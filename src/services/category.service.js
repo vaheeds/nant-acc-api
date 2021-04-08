@@ -8,6 +8,9 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<Category>}
  */
 const createCategory = async (categoryBody) => {
+  if (await Category.isDuplicate(categoryBody.categoryName, categoryBody.parentId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Category is already exist');
+  }
   const category = await Category.create(categoryBody);
   return category;
 };

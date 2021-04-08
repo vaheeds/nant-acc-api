@@ -8,8 +8,8 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(validate(categoryValidation.createCategory), categoryController.createCategory)
-  .get(validate(categoryValidation.getCategories), categoryController.getCategories);
+  .post(auth('manageCategories'), validate(categoryValidation.createCategory), categoryController.createCategory)
+  .get(auth('getCategories'), validate(categoryValidation.getCategories), categoryController.getCategories);
 
 router
   .route('/:categoryId')
@@ -31,7 +31,7 @@ module.exports = router;
  * /categories:
  *   post:
  *     summary: Create a category
- *     description: Only admins can create other categories.
+ *     description: Only admins can create categories.
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -42,30 +42,16 @@ module.exports = router;
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - email
- *               - password
- *               - role
+ *               - categoryName
+ *               - isIncome
  *             properties:
- *               name:
+ *               categoryName:
  *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *                 description: must be unique
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 8
- *                 description: At least one number and one letter
- *               role:
- *                  type: string
- *                  enum: [category, admin]
+ *               isIncome:
+ *                 type: boolean
  *             example:
- *               name: fake name
- *               email: fake@example.com
- *               password: password1
- *               role: category
+ *               categoryName: حقوق
+ *               isIncome: true
  *     responses:
  *       "201":
  *         description: Created
@@ -74,7 +60,7 @@ module.exports = router;
  *             schema:
  *                $ref: '#/components/schemas/Category'
  *       "400":
- *         $ref: '#/components/responses/DuplicateEmail'
+ *         $ref: '#/components/responses/BadRequest'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":

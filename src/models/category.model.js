@@ -3,7 +3,9 @@ const { toJSON, paginate } = require('./plugins');
 
 const categorySchema = mongoose.Schema(
   {
-    parentId: { type: String },
+    parentId: {
+      type: mongoose.SchemaTypes.ObjectId,
+    },
     categoryName: {
       type: String,
       required: true,
@@ -27,6 +29,17 @@ const categorySchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 categorySchema.plugin(toJSON);
 categorySchema.plugin(paginate);
+
+/**
+ * Check if Category is a duplicated one
+ * @param {string} categoryName - The category name
+ * @param {ObjectId} [parentId] - The id of the category's parent
+ * @returns {Promise<boolean>}
+ */
+categorySchema.statics.isDuplicate = async function (categoryName, parentId) {
+  const category = await this.findOne({ categoryName, parentId });
+  return !!category;
+};
 
 /**
  * @typedef Category
