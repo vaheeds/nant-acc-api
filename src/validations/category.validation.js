@@ -5,7 +5,7 @@ const createCategory = {
   body: Joi.object().keys({
     categoryName: Joi.string().required().min(3).max(255),
     parentId: Joi.string().custom(objectId),
-    hitCount: Joi.number().integer(),
+    hitCount: Joi.number().integer().min(0),
     isIncome: Joi.boolean().required(),
   }),
 };
