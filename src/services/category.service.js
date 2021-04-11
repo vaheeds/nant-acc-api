@@ -49,9 +49,9 @@ const updateCategoryById = async (categoryId, updateBody) => {
   if (!category) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
   }
-  // if (updateBody.email && (await Category.isEmailTaken(updateBody.email, categoryId))) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  // }
+  if (await Category.isDuplicate(updateBody.categoryName, updateBody.parentId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'The same category is already exist');
+  }
   Object.assign(category, updateBody);
   await category.save();
   return category;

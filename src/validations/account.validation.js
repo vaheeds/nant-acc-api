@@ -1,16 +1,17 @@
 const Joi = require('joi');
+const { objectId } = require('./custom.validation');
 
 const createAccount = {
   body: Joi.object().keys({
     accountName: Joi.string().required().min(3).max(255),
-    initBalance: Joi.number().integer().required().min(0),
+    initBalance: Joi.number().required().min(0),
     archived: Joi.boolean(),
     descr: Joi.string().max(512),
-    sortOrder: Joi.number().min(0),
+    sortOrder: Joi.number().integer().min(0),
   }),
 };
 
-const getCategories = {
+const getAccounts = {
   query: Joi.object().keys({
     accountName: Joi.string(),
     initBalance: Joi.number(),
@@ -35,10 +36,11 @@ const updateAccount = {
   }),
   body: Joi.object()
     .keys({
-      accountName: Joi.string(),
-      hitCount: Joi.number().integer(),
-      isIncome: Joi.boolean(),
-      parentId: Joi.string().custom(objectId),
+      accountName: Joi.string().min(3).max(255),
+      initBalance: Joi.number().min(0),
+      archived: Joi.boolean(),
+      descr: Joi.string().max(512),
+      sortOrder: Joi.number().integer().min(0),
     })
     .min(1),
 };
@@ -51,7 +53,7 @@ const deleteAccount = {
 
 module.exports = {
   createAccount,
-  getCategories,
+  getAccounts,
   getAccount,
   updateAccount,
   deleteAccount,

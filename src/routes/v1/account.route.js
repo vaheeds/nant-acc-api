@@ -1,38 +1,38 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-const categoryValidation = require('../../validations/category.validation');
-const categoryController = require('../../controllers/category.controller');
+const accountValidation = require('../../validations/account.validation');
+const accountController = require('../../controllers/account.controller');
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageCategories'), validate(categoryValidation.createCategory), categoryController.createCategory)
-  .get(auth('getCategories'), validate(categoryValidation.getCategories), categoryController.getCategories);
+  .post(auth('manageAccounts'), validate(accountValidation.createAccount), accountController.createAccount)
+  .get(auth('getAccounts'), validate(accountValidation.getAccounts), accountController.getAccounts);
 
 router
-  .route('/:categoryId')
-  .get(auth('getCategories'), validate(categoryValidation.getCategory), categoryController.getCategory)
-  .patch(auth('manageCategories'), validate(categoryValidation.updateCategory), categoryController.updateCategory)
-  .delete(auth('manageCategories'), validate(categoryValidation.deleteCategory), categoryController.deleteCategory);
+  .route('/:accountId')
+  .get(auth('getAccounts'), validate(accountValidation.getAccount), accountController.getAccount)
+  .patch(auth('manageAccounts'), validate(accountValidation.updateAccount), accountController.updateAccount)
+  .delete(auth('manageAccounts'), validate(accountValidation.deleteAccount), accountController.deleteAccount);
 
 module.exports = router;
 
 /**
  * @swagger
  * tags:
- *   name: Categories
- *   description: Category management and retrieval
+ *   name: Accounts
+ *   description: Account management and retrieval
  */
 
 /**
  * @swagger
- * /categories:
+ * /accounts:
  *   post:
- *     summary: Create a category
- *     description: Only admins can create categories.
- *     tags: [Categories]
+ *     summary: Create a account
+ *     description: Only admins can create accounts.
+ *     tags: [Accounts]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -42,23 +42,30 @@ module.exports = router;
  *           schema:
  *             type: object
  *             required:
- *               - categoryName
- *               - isIncome
+ *               - accountName
+ *               - initBalance
  *             properties:
- *               categoryName:
+ *               accountName:
  *                 type: string
- *               isIncome:
+ *               initBalance:
+ *                 type: number
+ *               descr:
+ *                 type: string
+ *               archived:
  *                 type: boolean
+ *               sortOrder:
+ *                 type: number
  *             example:
- *               categoryName: Salary
- *               isIncome: true
+ *               accountName: My Bank
+ *               initBalance: 10
+ *               descr: Mu bank account number 234244
  *     responses:
  *       "201":
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Category'
+ *                $ref: '#/components/schemas/Account'
  *       "400":
  *         $ref: '#/components/responses/BadRequest'
  *       "401":
@@ -67,9 +74,9 @@ module.exports = router;
  *         $ref: '#/components/responses/Forbidden'
  *
  *   get:
- *     summary: Get all categories
- *     description: Only admins can retrieve all categories.
- *     tags: [Categories]
+ *     summary: Get all accounts
+ *     description: Only admins can retrieve all accounts.
+ *     tags: [Accounts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -77,12 +84,12 @@ module.exports = router;
  *         name: name
  *         schema:
  *           type: string
- *         description: Category name
+ *         description: Account name
  *       - in: query
  *         name: role
  *         schema:
  *           type: string
- *         description: Category role
+ *         description: Account role
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -94,7 +101,7 @@ module.exports = router;
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of categories
+ *         description: Maximum number of accounts
  *       - in: query
  *         name: page
  *         schema:
@@ -113,7 +120,7 @@ module.exports = router;
  *                 results:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Category'
+ *                     $ref: '#/components/schemas/Account'
  *                 page:
  *                   type: integer
  *                   example: 1
@@ -134,11 +141,11 @@ module.exports = router;
 
 /**
  * @swagger
- * /categories/{id}:
+ * /accounts/{id}:
  *   get:
- *     summary: Get a category
- *     description: Logged in categories can fetch only their own category information. Only admins can fetch other categories.
- *     tags: [Categories]
+ *     summary: Get a account
+ *     description: Logged in accounts can fetch only their own account information. Only admins can fetch other accounts.
+ *     tags: [Accounts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -147,14 +154,14 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Category id
+ *         description: Account id
  *     responses:
  *       "200":
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Category'
+ *                $ref: '#/components/schemas/Account'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
@@ -163,9 +170,9 @@ module.exports = router;
  *         $ref: '#/components/responses/NotFound'
  *
  *   patch:
- *     summary: Update a category
- *     description: Logged in categories can only update their own information. Only admins can update other categories.
- *     tags: [Categories]
+ *     summary: Update a account
+ *     description: Logged in accounts can only update their own information. Only admins can update other accounts.
+ *     tags: [Accounts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -174,7 +181,7 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Category id
+ *         description: Account id
  *     requestBody:
  *       required: true
  *       content:
@@ -203,7 +210,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Category'
+ *                $ref: '#/components/schemas/Account'
  *       "400":
  *         $ref: '#/components/responses/DuplicateEmail'
  *       "401":
@@ -214,9 +221,9 @@ module.exports = router;
  *         $ref: '#/components/responses/NotFound'
  *
  *   delete:
- *     summary: Delete a category
- *     description: Logged in categories can delete only themselves. Only admins can delete other categories.
- *     tags: [Categories]
+ *     summary: Delete a account
+ *     description: Logged in accounts can delete only themselves. Only admins can delete other accounts.
+ *     tags: [Accounts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -225,7 +232,7 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: Category id
+ *         description: Account id
  *     responses:
  *       "200":
  *         description: No content

@@ -34,9 +34,28 @@ components:
           type: string
       example:
         id: 5ebac534954b54139806c112
-        categoryName: حقوق
+        categoryName: Salary
         hitCount: 0
         isIncome: true
+
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+        accountName:
+          type: string
+        initBlance:
+          type: number
+        archived:
+          type: boolean
+        descr:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+        accountName: My Bank
+        initBlance: 0
+        archived: false
 
     Token:
       type: object
@@ -76,6 +95,15 @@ components:
           example:
             code: 400
             message: Email already taken
+    IsDuplicate:
+      description: Object already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Object already exists
     BadRequest:
       description: Bad Request!
       content:
