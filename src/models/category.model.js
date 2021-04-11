@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { categoryTypes } = require('../config/category');
 
 const categorySchema = mongoose.Schema(
   {
@@ -15,10 +16,10 @@ const categorySchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    isIncome: {
-      type: Boolean,
+    categoryType: {
+      type: String,
+      enum: categoryTypes,
       required: true,
-      default: false,
     },
   },
   {

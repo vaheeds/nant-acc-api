@@ -43,15 +43,15 @@ module.exports = router;
  *             type: object
  *             required:
  *               - categoryName
- *               - isIncome
+ *               - categoryType
  *             properties:
  *               categoryName:
  *                 type: string
- *               isIncome:
- *                 type: boolean
+ *               categoryType:
+ *                 type: string
  *             example:
  *               categoryName: Salary
- *               isIncome: true
+ *               categoryType: income
  *     responses:
  *       "201":
  *         description: Created
