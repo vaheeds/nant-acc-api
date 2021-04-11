@@ -34,10 +34,16 @@ const deleteCategory = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const addChildCategory = catchAsync(async (req, res) => {
+  const category = await categoryService.addChildCategoryById(req.body.parentId, req.body.childId);
+  res.send(category);
+});
+
 module.exports = {
   createCategory,
   getCategories,
   getCategory,
   updateCategory,
   deleteCategory,
+  addChildCategory,
 };

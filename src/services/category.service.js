@@ -8,7 +8,7 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<Category>}
  */
 const createCategory = async (categoryBody) => {
-  if (await Category.isDuplicate(categoryBody.categoryName, categoryBody.parentId)) {
+  if (await Category.isDuplicate(categoryBody.categoryName, categoryBody.categoryType)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Category is already exist');
   }
   const category = await Category.create(categoryBody);
@@ -71,10 +71,28 @@ const deleteCategoryById = async (categoryId) => {
   return category;
 };
 
+/**
+ * Add a category as a child to another categorry
+ * @param {ObjectId} parentId
+ * @param {ObjectId} childId
+ * @returns {Promise<Category>}
+ */
+const addChildCategoryById = async (parentId, childId) => {
+  const parent = await getCategoryById(parentId);
+  const child = await getCategoryById(childId);
+  if (!parent || !child) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'One category not found');
+  }
+  parent.children.push(child);
+  await parent.save();
+  return parent;
+};
+
 module.exports = {
   createCategory,
   queryCategories,
   getCategoryById,
   updateCategoryById,
   deleteCategoryById,
+  addChildCategoryById,
 };

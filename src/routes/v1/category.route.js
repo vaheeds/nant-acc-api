@@ -17,6 +17,10 @@ router
   .patch(auth('manageCategories'), validate(categoryValidation.updateCategory), categoryController.updateCategory)
   .delete(auth('manageCategories'), validate(categoryValidation.deleteCategory), categoryController.deleteCategory);
 
+router
+  .route('/addchild')
+  .post(auth('manageCategories'), validate(categoryValidation.addChildCategory), categoryController.addChildCategory);
+
 module.exports = router;
 
 /**

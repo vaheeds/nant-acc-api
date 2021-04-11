@@ -1,27 +1,23 @@
 const mongoose = require('mongoose');
+const { number } = require('joi');
 const { toJSON, paginate } = require('./plugins');
+const { flags } = require('../config/account');
 
 const transactionSchema = mongoose.Schema(
   {
-    fromAccId: {
-      type: mongoose.SchemaTypes.ObjectId,
+    amount: {
+      type: number,
+      required: true,
+      min: 0,
     },
-    toAccId: {
-      type: mongoose.SchemaTypes.ObjectId,
-    },
-    transactionName: {
+    descr: {
       type: String,
       required: true,
       trim: true,
     },
-    hitCount: {
-      type: Number,
-      default: 0,
-    },
-    isIncome: {
-      type: Boolean,
-      required: true,
-      default: false,
+    status: {
+      type: String,
+      enum: flags,
     },
   },
   {

@@ -4,9 +4,6 @@ const { categoryTypes } = require('../config/category');
 
 const categorySchema = mongoose.Schema(
   {
-    parentId: {
-      type: mongoose.SchemaTypes.ObjectId,
-    },
     categoryName: {
       type: String,
       required: true,
@@ -27,6 +24,9 @@ const categorySchema = mongoose.Schema(
   }
 );
 
+// adding Array of child categories after initialization
+categorySchema.add({ children: [categorySchema] });
+
 // add plugin that converts mongoose to json
 categorySchema.plugin(toJSON);
 categorySchema.plugin(paginate);
@@ -34,11 +34,11 @@ categorySchema.plugin(paginate);
 /**
  * Check if Category is a duplicated one
  * @param {string} categoryName - The category name
- * @param {ObjectId} [parentId] - The id of the category's parent
+ * @param {string} categoryType - The type of the category
  * @returns {Promise<boolean>}
  */
-categorySchema.statics.isDuplicate = async function (categoryName, parentId) {
-  const category = await this.findOne({ categoryName, parentId });
+categorySchema.statics.isDuplicate = async function (categoryName, categoryType) {
+  const category = await this.findOne({ categoryName, categoryType });
   return !!category;
 };
 
