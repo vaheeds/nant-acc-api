@@ -7,7 +7,12 @@ const createAccount = {
     initBalance: Joi.number().required().min(0),
     archived: Joi.boolean(),
     descr: Joi.string().max(512),
-    sortOrder: Joi.number().integer().min(0),
+    tags: Joi.array().items(
+      Joi.object({
+        title: Joi.string(),
+        color: Joi.string().length(7),
+      })
+    ),
   }),
 };
 
@@ -17,7 +22,13 @@ const getAccounts = {
     initBalance: Joi.number(),
     archived: Joi.boolean(),
     descr: Joi.string(),
-    sortOrder: Joi.number().integer(),
+    hitCount: Joi.number().integer(),
+    tags: Joi.array().items(
+      Joi.object({
+        title: Joi.string(),
+        color: Joi.string(),
+      })
+    ),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -40,7 +51,12 @@ const updateAccount = {
       initBalance: Joi.number().min(0),
       archived: Joi.boolean(),
       descr: Joi.string().max(512),
-      sortOrder: Joi.number().integer().min(0),
+      tags: Joi.array().items(
+        Joi.object({
+          title: Joi.string(),
+          color: Joi.string().length(7),
+        })
+      ),
     })
     .min(1),
 };

@@ -15,10 +15,12 @@ const transactionSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
-    status: {
-      type: String,
-      enum: flags,
-    },
+    tags: [
+      {
+        title: { type: String, trim: true },
+        color: { type: String, lowercase: true, trim: true },
+      },
+    ],
   },
   {
     timestamps: true,
