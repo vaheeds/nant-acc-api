@@ -10,8 +10,11 @@ const createCategory = catchAsync(async (req, res) => {
 });
 
 const getCategories = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['categoryName', 'categoryType', 'hitCount']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  // extracting options and filters from request query
+  // here we pass the properties that can be used in filtering, other model properties' will exclude.
+  const filter = pick(req.query, ['categoryName', 'categoryType', 'hitCount', 'parent']);
+  // here are the options that we use to generate response.
+  const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);
   const result = await categoryService.queryCategories(filter, options);
   res.send(result);
 });
@@ -34,16 +37,10 @@ const deleteCategory = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-const addChildCategory = catchAsync(async (req, res) => {
-  const category = await categoryService.addChildCategoryById(req.body.parentId, req.body.childId);
-  res.send(category);
-});
-
 module.exports = {
   createCategory,
   getCategories,
   getCategory,
   updateCategory,
   deleteCategory,
-  addChildCategory,
 };

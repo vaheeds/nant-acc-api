@@ -30,7 +30,7 @@ components:
           type: number
         isIncome:
           type: boolean
-        parentId:
+        parent:
           type: string
       example:
         id: 5ebac534954b54139806c112

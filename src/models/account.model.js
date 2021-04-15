@@ -37,7 +37,7 @@ accountSchema.plugin(paginate);
 
 /**
  * Check if account is a duplicated one
- * @param {string} accountName - The account name@param {ObjectId} [parentId] - The id of the account's parent
+ * @param {string} accountName - The account name
  * @returns {Promise<boolean>}
  */
 accountSchema.statics.isDuplicate = async function (accountName) {

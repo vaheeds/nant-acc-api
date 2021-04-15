@@ -3,15 +3,36 @@ const { Category } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
+ * Get category by id
+ * @param {ObjectId} id
+ * @returns {Promise<Category>}
+ */
+const getCategoryById = async (id) => {
+  return Category.findById(id);
+};
+
+/**
  * Create a category
  * @param {Object} categoryBody
  * @returns {Promise<Category>}
  */
 const createCategory = async (categoryBody) => {
-  if (await Category.isDuplicate(categoryBody.categoryName, categoryBody.categoryType)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Category is already exist');
+  const body = categoryBody;
+  const parent = await getCategoryById(body.parent);
+  if (!parent) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Parent is not found');
   }
-  const category = await Category.create(categoryBody);
+  // check if parent has same child already
+  const duplicateFound = parent.children.filter((ch) => ch.categoryName === body.categoryName);
+  if (duplicateFound.length > 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Same level category is already exists');
+  }
+  // client not allowed to set categoryType, we set it here
+  body.categoryType = parent.categoryType;
+
+  const category = await Category.create(body);
+  parent.children.push(category);
+  parent.save();
   return category;
 };
 
@@ -20,6 +41,7 @@ const createCategory = async (categoryBody) => {
  * @param {Object} filter - Mongo filter
  * @param {Object} options - Query options
  * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {string} [options.populate] - Populate data fields. Hierarchy of fields should be separated by (.).
  * @param {number} [options.limit] - Maximum number of results per page (default = 10)
  * @param {number} [options.page] - Current page (default = 1)
  * @returns {Promise<QueryResult>}
@@ -27,15 +49,6 @@ const createCategory = async (categoryBody) => {
 const queryCategories = async (filter, options) => {
   const categories = await Category.paginate(filter, options);
   return categories;
-};
-
-/**
- * Get category by id
- * @param {ObjectId} id
- * @returns {Promise<Category>}
- */
-const getCategoryById = async (id) => {
-  return Category.findById(id);
 };
 
 /**
@@ -49,9 +62,18 @@ const updateCategoryById = async (categoryId, updateBody) => {
   if (!category) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
   }
-  if (await Category.isDuplicate(updateBody.categoryName, updateBody.parentId)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'The same category is already exist');
+  if (!category.parent) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Editing root categories are not allowed');
   }
+  const parent = await getCategoryById(category.parent);
+  const duplicateFound = parent.children.filter((ch) => ch.categoryName === updateBody.categoryName);
+  if (duplicateFound.length > 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Same categoryName is already exists');
+  }
+
+  const childIndex = parent.children.findIndex((x) => x.categoryName === category.categoryName);
+  parent.children[childIndex].categoryName = updateBody.categoryName;
+  await parent.save();
   Object.assign(category, updateBody);
   await category.save();
   return category;
@@ -67,25 +89,11 @@ const deleteCategoryById = async (categoryId) => {
   if (!category) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
   }
+  if (category.children.length > 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Category has one or more children, delete them first');
+  }
   await category.remove();
   return category;
-};
-
-/**
- * Add a category as a child to another categorry
- * @param {ObjectId} parentId
- * @param {ObjectId} childId
- * @returns {Promise<Category>}
- */
-const addChildCategoryById = async (parentId, childId) => {
-  const parent = await getCategoryById(parentId);
-  const child = await getCategoryById(childId);
-  if (!parent || !child) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'One category not found');
-  }
-  parent.children.push(child);
-  await parent.save();
-  return parent;
 };
 
 module.exports = {
@@ -94,5 +102,4 @@ module.exports = {
   getCategoryById,
   updateCategoryById,
   deleteCategoryById,
-  addChildCategoryById,
 };
