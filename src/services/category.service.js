@@ -8,7 +8,8 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<Category>}
  */
 const getCategoryById = async (id) => {
-  return Category.findById(id);
+  const result = await Category.findById(id);
+  return result;
 };
 
 /**
@@ -32,7 +33,7 @@ const createCategory = async (categoryBody) => {
 
   const category = await Category.create(body);
   parent.children.push(category);
-  parent.save();
+  await parent.save();
   return category;
 };
 

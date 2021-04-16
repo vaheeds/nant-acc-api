@@ -11,7 +11,7 @@ const createCategory = catchAsync(async (req, res) => {
 
 const getCategories = catchAsync(async (req, res) => {
   // extracting options and filters from request query
-  // here we pass the properties that can be used in filtering, other model properties' will exclude.
+  // here we pass the properties that can be used in filtering, other model properties will exclude.
   const filter = pick(req.query, ['categoryName', 'categoryType', 'hitCount', 'parent']);
   // here are the options that we use to generate response.
   const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);

@@ -1,26 +1,51 @@
 const mongoose = require('mongoose');
 const { number } = require('joi');
 const { toJSON, paginate } = require('./plugins');
-const { flags } = require('../config/account');
+
+const tagSchema = mongoose.Schema({
+  title: { type: String, trim: true },
+  color: {
+    //  #f4b332
+    type: String,
+    lowercase: true,
+    minlength: 7,
+    maxlength: 7,
+  },
+});
 
 const transactionSchema = mongoose.Schema(
   {
+    fromAccount: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Account',
+    },
+    fromAccountName: String,
+    toAccount: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Account',
+    },
+    toAccountName: String,
+    category: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
+    categoryName: String,
+    categoryType: String,
+    date: {
+      type: Date,
+      required: true,
+    },
     amount: {
-      type: number,
+      type: Number,
       required: true,
       min: 0,
     },
     descr: {
       type: String,
       required: true,
-      trim: true,
     },
-    tags: [
-      {
-        title: { type: String, trim: true },
-        color: { type: String, lowercase: true, trim: true },
-      },
-    ],
+    tag: tagSchema,
   },
   {
     timestamps: true,
@@ -30,17 +55,6 @@ const transactionSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 transactionSchema.plugin(toJSON);
 transactionSchema.plugin(paginate);
-
-/**
- * Check if Transaction is a duplicated one
- * @param {string} transactionName - The transaction name
- * @param {ObjectId} [parentId] - The id of the transaction's parent
- * @returns {Promise<boolean>}
- */
-transactionSchema.statics.isDuplicate = async function (transactionName, parentId) {
-  const transaction = await this.findOne({ transactionName, parentId });
-  return !!transaction;
-};
 
 /**
  * @typedef Transaction

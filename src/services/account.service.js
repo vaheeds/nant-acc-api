@@ -3,7 +3,17 @@ const { Account } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
- * Create a account
+ * Get account by id
+ * @param {ObjectId} id
+ * @returns {Promise<Account>}
+ */
+const getAccountById = async (id) => {
+  const result = await Account.findById(id);
+  return result;
+};
+
+/**
+ * Create an account
  * @param {Object} accountBody
  * @returns {Promise<Account>}
  */
@@ -27,15 +37,6 @@ const createAccount = async (accountBody) => {
 const queryAccounts = async (filter, options) => {
   const accounts = await Account.paginate(filter, options);
   return accounts;
-};
-
-/**
- * Get account by id
- * @param {ObjectId} id
- * @returns {Promise<Account>}
- */
-const getAccountById = async (id) => {
-  return Account.findById(id);
 };
 
 /**

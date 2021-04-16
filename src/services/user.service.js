@@ -35,7 +35,8 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
+  const result = await User.findById(id);
+  return result;
 };
 
 /**
@@ -44,7 +45,8 @@ const getUserById = async (id) => {
  * @returns {Promise<User>}
  */
 const getUserByEmail = async (email) => {
-  return User.findOne({ email });
+  const result = await User.findOne({ email });
+  return result;
 };
 
 /**
