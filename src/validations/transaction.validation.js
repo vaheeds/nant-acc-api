@@ -11,7 +11,7 @@ const createTransaction = {
     descr: Joi.string().required(),
     tag: Joi.object({
       title: Joi.string(),
-      color: Joi.string().length(7),
+      color: Joi.string(),
     }),
   }),
 };
@@ -30,7 +30,7 @@ const getTransactions = {
     descr: Joi.string(),
     tag: Joi.object({
       title: Joi.string(),
-      color: Joi.string().length(7),
+      color: Joi.string(),
     }),
     populate: Joi.string(),
     sortBy: Joi.string(),
@@ -59,7 +59,7 @@ const updateTransaction = {
       descr: Joi.string(),
       tag: Joi.object({
         title: Joi.string(),
-        color: Joi.string().length(7),
+        color: Joi.string(),
       }),
     })
     .min(1),

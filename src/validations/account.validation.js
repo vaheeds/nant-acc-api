@@ -10,7 +10,7 @@ const createAccount = {
     tags: Joi.array().items(
       Joi.object({
         title: Joi.string(),
-        color: Joi.string().length(7),
+        color: Joi.string(),
       })
     ),
   }),
@@ -54,7 +54,7 @@ const updateAccount = {
       tags: Joi.array().items(
         Joi.object({
           title: Joi.string(),
-          color: Joi.string().length(7),
+          color: Joi.string(),
         })
       ),
     })

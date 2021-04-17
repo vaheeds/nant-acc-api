@@ -3,13 +3,7 @@ const { toJSON, paginate } = require('./plugins');
 
 const tagSchema = mongoose.Schema({
   title: { type: String, trim: true },
-  color: {
-    //  #f4b332
-    type: String,
-    lowercase: true,
-    minlength: 7,
-    maxlength: 7,
-  },
+  color: { type: String, trim: true },
 });
 
 const accountSchema = mongoose.Schema(
