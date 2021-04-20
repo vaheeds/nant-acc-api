@@ -1,5 +1,6 @@
 const { REQUEST_URI_TOO_LONG } = require('http-status');
 const httpStatus = require('http-status');
+const logger = require('../config/logger');
 const { Transaction } = require('../models');
 const ApiError = require('../utils/ApiError');
 const accountService = require('./account.service');
@@ -15,17 +16,18 @@ const getTransactionById = async (id) => {
   return result;
 };
 
-const accountTotalToDate = (account, date) => {
-  const aggregateFrom = Transaction.aggregate([
+const accountTotalToDate = async (account, date) => {
+  const aggregateFrom = await Transaction.aggregate([
     { $match: { fromAccount: account, date: { $lte: date } } },
     { $group: { _id: null, total: { $sum: '$amount' } } },
   ]);
-  const aggregateTo = Transaction.aggregate([
+  const aggregateTo = await Transaction.aggregate([
     { $match: { toAccount: account, date: { $lte: date } } },
     { $group: { _id: null, total: { $sum: '$amount' } } },
   ]);
-  return 343; //aggregateFrom[0] && aggregateFrom[0].total;
-  //return (aggregateTo[0] ? aggregateTo[0].total : 0) - (aggregateFrom[0] ? aggregateFrom[0].total : 0);
+  const toSum = aggregateTo[0] ? aggregateTo[0].total : 0;
+  const fromSum = aggregateFrom[0] ? aggregateFrom[0].total : 0;
+  return toSum - fromSum;
 };
 
 /**
@@ -78,10 +80,11 @@ const createTransaction = async (transactionBody) => {
  */
 const queryTransactions = async (filter, options) => {
   const transactions = await Transaction.paginate(filter, options);
-  transactions.results.map((t) => (t.remaining = accountTotalToDate(t.fromAccount, t.date)));
-
-  //const res = transactions.results.map((t) => ({ ...t, remaining: (await accountTotalToDate(t.fromAccount, t.date)) }));
-  //console.log(ar);
+  await Promise.all(
+    transactions.results.map(async (t) => {
+      t.remaining = await accountTotalToDate(t.fromAccount, t.date);
+    })
+  );
   return transactions;
 };
 
