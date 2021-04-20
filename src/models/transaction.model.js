@@ -39,6 +39,7 @@ const transactionSchema = mongoose.Schema(
       required: true,
     },
     tag: tagSchema,
+    remaining: Number,
   },
   {
     timestamps: true,

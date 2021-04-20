@@ -1,3 +1,4 @@
+const { REQUEST_URI_TOO_LONG } = require('http-status');
 const httpStatus = require('http-status');
 const { Transaction } = require('../models');
 const ApiError = require('../utils/ApiError');
@@ -12,6 +13,19 @@ const categoryService = require('./category.service');
 const getTransactionById = async (id) => {
   const result = await Transaction.findById(id);
   return result;
+};
+
+const accountTotalToDate = (account, date) => {
+  const aggregateFrom = Transaction.aggregate([
+    { $match: { fromAccount: account, date: { $lte: date } } },
+    { $group: { _id: null, total: { $sum: '$amount' } } },
+  ]);
+  const aggregateTo = Transaction.aggregate([
+    { $match: { toAccount: account, date: { $lte: date } } },
+    { $group: { _id: null, total: { $sum: '$amount' } } },
+  ]);
+  return 343; //aggregateFrom[0] && aggregateFrom[0].total;
+  //return (aggregateTo[0] ? aggregateTo[0].total : 0) - (aggregateFrom[0] ? aggregateFrom[0].total : 0);
 };
 
 /**
@@ -64,6 +78,10 @@ const createTransaction = async (transactionBody) => {
  */
 const queryTransactions = async (filter, options) => {
   const transactions = await Transaction.paginate(filter, options);
+  transactions.results.map((t) => (t.remaining = accountTotalToDate(t.fromAccount, t.date)));
+
+  //const res = transactions.results.map((t) => ({ ...t, remaining: (await accountTotalToDate(t.fromAccount, t.date)) }));
+  //console.log(ar);
   return transactions;
 };
 

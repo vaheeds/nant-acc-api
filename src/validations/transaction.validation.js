@@ -32,6 +32,7 @@ const getTransactions = {
       title: Joi.string(),
       color: Joi.string(),
     }),
+    remaining: Joi.number(),
     populate: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),

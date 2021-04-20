@@ -21,6 +21,7 @@ const getTransactions = catchAsync(async (req, res) => {
     'date',
     'amount',
     'tag',
+    'remaining',
   ]);
   const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);
   const result = await transactionService.queryTransactions(filter, options);
