@@ -20,6 +20,20 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 };
 
 /**
+ * Login with username and password
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<User>}
+ */
+const loginUserWithUsernameAndPassword = async (username, password) => {
+  const user = await userService.getUserByUsername(username);
+  if (!user || !(await user.isPasswordMatch(password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect username or password');
+  }
+  return user;
+};
+
+/**
  * Logout
  * @param {string} refreshToken
  * @returns {Promise}
@@ -92,6 +106,7 @@ const verifyEmail = async (verifyEmailToken) => {
 
 module.exports = {
   loginUserWithEmailAndPassword,
+  loginUserWithUsernameAndPassword,
   logout,
   refreshAuth,
   resetPassword,
