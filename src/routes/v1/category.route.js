@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageCategories'), validate(categoryValidation.createCategory), categoryController.createCategory)
-  .get(auth('getCategories'), validate(categoryValidation.getCategories), categoryController.getCategories);
+  .get(validate(categoryValidation.getCategories), categoryController.getCategories);
 
 router
   .route('/:categoryId')

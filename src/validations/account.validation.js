@@ -32,6 +32,10 @@ const getAccounts = {
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+    _sort: Joi.string(),
+    _oeder: Joi.string(),
+    _start: Joi.number(),
+    _end: Joi.number(),
   }),
 };
 
