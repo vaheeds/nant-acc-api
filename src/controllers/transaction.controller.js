@@ -25,6 +25,7 @@ const getTransactions = catchAsync(async (req, res) => {
   ]);
   const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);
   const result = await transactionService.queryTransactions(filter, options);
+  res.append('X-Total-Count', result.totalResults);
   res.send(result);
 });
 

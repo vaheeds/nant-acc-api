@@ -13,6 +13,7 @@ const getUsers = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'username', 'role']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await userService.queryUsers(filter, options);
+  res.append('X-Total-Count', result.totalResults);
   res.send(result);
 });
 

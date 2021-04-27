@@ -16,6 +16,7 @@ const getCategories = catchAsync(async (req, res) => {
   // here are the options that we use to generate response.
   const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);
   const result = await categoryService.queryCategories(filter, options);
+  res.append('X-Total-Count', result.totalResults);
   res.send(result);
 });
 

@@ -13,6 +13,7 @@ const getAccounts = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['accountName', 'initBalance', 'archived', 'hitCount']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await accountService.queryAccounts(filter, options);
+  res.append('X-Total-Count', result.totalResults);
   res.send(result);
 });
 
