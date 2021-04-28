@@ -9,12 +9,13 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageAccounts'), validate(accountValidation.createAccount), accountController.createAccount)
-  .get(validate(accountValidation.getAccounts), accountController.getAccounts);
+  .get(accountController.getAccounts);
 
 router
   .route('/:accountId')
-  .get(auth('getAccounts'), validate(accountValidation.getAccount), accountController.getAccount)
-  .patch(auth('manageAccounts'), validate(accountValidation.updateAccount), accountController.updateAccount)
+  .get(validate(accountValidation.getAccount), accountController.getAccount)
+  .patch(validate(accountValidation.updateAccount), accountController.updateAccount)
+  .put(validate(accountValidation.updateAccount), accountController.updateAccount)
   .delete(auth('manageAccounts'), validate(accountValidation.deleteAccount), accountController.deleteAccount);
 
 module.exports = router;

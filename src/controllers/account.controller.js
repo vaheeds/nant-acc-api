@@ -11,10 +11,11 @@ const createAccount = catchAsync(async (req, res) => {
 
 const getAccounts = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['accountName', 'initBalance', 'archived', 'hitCount']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const options = pick(req.query, ['_start', '_end', '_sort', '_order', 'populate']);
   const result = await accountService.queryAccounts(filter, options);
   res.append('X-Total-Count', result.totalResults);
-  res.send(result);
+  res.append('Access-Control-Expose-Headers', 'X-Total-Count');
+  res.send(result.data);
 });
 
 const getAccount = catchAsync(async (req, res) => {

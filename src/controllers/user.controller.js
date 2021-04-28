@@ -11,10 +11,11 @@ const createUser = catchAsync(async (req, res) => {
 
 const getUsers = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'username', 'role']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const options = pick(req.query, ['_start', '_end', '_sort', '_order', 'populate']);
   const result = await userService.queryUsers(filter, options);
   res.append('X-Total-Count', result.totalResults);
-  res.send(result);
+  res.append('Access-Control-Expose-Headers', 'X-Total-Count');
+  res.send(result.data);
 });
 
 const getUser = catchAsync(async (req, res) => {

@@ -23,10 +23,11 @@ const getTransactions = catchAsync(async (req, res) => {
     'tag',
     'remaining',
   ]);
-  const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);
+  const options = pick(req.query, ['_start', '_end', '_sort', '_order', 'populate']);
   const result = await transactionService.queryTransactions(filter, options);
   res.append('X-Total-Count', result.totalResults);
-  res.send(result);
+  res.append('Access-Control-Expose-Headers', 'X-Total-Count');
+  res.send(result.data);
 });
 
 const getTransaction = catchAsync(async (req, res) => {
