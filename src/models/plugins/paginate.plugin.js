@@ -24,12 +24,12 @@ const paginate = (schema) => {
     } else {
       sort = 'createdAt';
     }
-
+    const perPage = options._end - options._start;
     const countPromise = this.countDocuments(filter).exec();
     let docsPromise = this.find(filter)
       .sort(sort)
-      .skip(options._start)
-      .limit(options._end - options._start);
+      .skip(options._start * 1) // *1 to convert to number
+      .limit(perPage);
 
     if (options.populate) {
       options.populate.split(',').forEach((populateOption) => {
