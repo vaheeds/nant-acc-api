@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageAccounts'), validate(accountValidation.createAccount), accountController.createAccount)
-  .get(accountController.getAccounts);
+  .get(auth('getAccounts'), validate(accountValidation.getAccounts), accountController.getAccounts);
 
 router
   .route('/:accountId')
