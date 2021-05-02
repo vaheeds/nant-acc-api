@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
-const tagSchema = mongoose.Schema({
-  title: { type: String, trim: true },
-  color: { type: String, trim: true },
-});
-
 const accountSchema = mongoose.Schema(
   {
     accountName: {
@@ -31,7 +26,7 @@ const accountSchema = mongoose.Schema(
       default: 0,
       min: 0,
     },
-    tags: [tagSchema],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
   },
   {
     timestamps: true,

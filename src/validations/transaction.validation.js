@@ -9,12 +9,7 @@ const createTransaction = {
     date: Joi.date().required(),
     amount: Joi.number().required().min(0),
     descr: Joi.string().required(),
-    tags: Joi.array().items(
-      Joi.object({
-        title: Joi.string(),
-        color: Joi.string(),
-      })
-    ),
+    tags: Joi.array().items(Joi.string().custom(objectId)),
   }),
 };
 
@@ -30,12 +25,7 @@ const getTransactions = {
     date: Joi.date(),
     amount: Joi.number().min(0),
     descr: Joi.string(),
-    tags: Joi.array().items(
-      Joi.object({
-        title: Joi.string(),
-        color: Joi.string(),
-      })
-    ),
+    tags: Joi.array().items(Joi.string().custom(objectId)),
     remaining: Joi.number(),
     populate: Joi.string(),
     sortBy: Joi.string(),
@@ -62,12 +52,7 @@ const updateTransaction = {
       date: Joi.date(),
       amount: Joi.number().min(0),
       descr: Joi.string(),
-      tags: Joi.array().items(
-        Joi.object({
-          title: Joi.string(),
-          color: Joi.string(),
-        })
-      ),
+      tags: Joi.array().items(Joi.string().custom(objectId)),
     })
     .min(1),
 };

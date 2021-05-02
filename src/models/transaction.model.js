@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
-const tagSchema = mongoose.Schema({
-  title: { type: String, trim: true },
-  color: { type: String, trim: true },
-});
-
 const transactionSchema = mongoose.Schema(
   {
     fromAccount: {
@@ -38,7 +33,7 @@ const transactionSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    tags: [tagSchema],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
     remaining: Number,
   },
   {
