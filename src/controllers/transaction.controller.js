@@ -20,7 +20,7 @@ const getTransactions = catchAsync(async (req, res) => {
     'categoryType',
     'date',
     'amount',
-    'tag',
+    'tags',
     'remaining',
   ]);
   const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);

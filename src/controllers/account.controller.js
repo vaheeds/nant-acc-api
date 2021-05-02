@@ -10,7 +10,7 @@ const createAccount = catchAsync(async (req, res) => {
 });
 
 const getAccounts = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['accountName', 'initBalance', 'archived', 'hitCount']);
+  const filter = pick(req.query, ['accountName', 'initBalance', 'archived', 'hitCount', 'tags']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await accountService.queryAccounts(filter, options);
   res.send(result);

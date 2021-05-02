@@ -38,7 +38,7 @@ const transactionSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    tag: tagSchema,
+    tags: [tagSchema],
     remaining: Number,
   },
   {
